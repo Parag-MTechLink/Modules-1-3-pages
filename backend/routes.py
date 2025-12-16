@@ -39,7 +39,7 @@ class EUTResponse(EUTCreate):
 
 
 # API ROUTES
-#api route to add eut
+# api route to add eut
 @router.post("/api/eut", response_model=EUTResponse)
 def add_eut(eut: EUTCreate, db: Session = Depends(get_db)):
     new_eut = EUT(**eut.dict())
