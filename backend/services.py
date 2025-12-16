@@ -1,1 +1,1 @@
-# For accepting real time service requests
+# This file is created for accepting real time service requests

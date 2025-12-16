@@ -1,4 +1,5 @@
 ---------------
+# This file contains further developement to maintain
 
 backend/api/
 backend/auth/
@@ -7,7 +8,6 @@ database/migrations/
 frontend/react-app/
 
 ---------
-
 database/
 ├── app.db
 ├── migrations/

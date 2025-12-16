@@ -7,19 +7,15 @@ from typing import List
 from backend.database import SessionLocal, engine
 from backend.models import Base, EUT
 
-# --------------------------------
-# DB INIT
-# --------------------------------
+# DataBase Initialization
 Base.metadata.create_all(bind=engine)
 
-# --------------------------------
+
 # ROUTER
-# --------------------------------
 router = APIRouter(tags=["EUT"])
 
-# --------------------------------
+
 # DB Dependency
-# --------------------------------
 def get_db():
     db = SessionLocal()
     try:
@@ -27,9 +23,7 @@ def get_db():
     finally:
         db.close()
 
-# --------------------------------
 # Pydantic Schemas
-# --------------------------------
 class EUTCreate(BaseModel):
     name: str
     quantity: int
@@ -37,16 +31,15 @@ class EUTCreate(BaseModel):
     model_number: str
     serial_number: str
 
-
 class EUTResponse(EUTCreate):
     id: int
 
     class Config:
         orm_mode = True
 
-# --------------------------------
+
 # API ROUTES
-# --------------------------------
+#api route to add eut
 @router.post("/api/eut", response_model=EUTResponse)
 def add_eut(eut: EUTCreate, db: Session = Depends(get_db)):
     new_eut = EUT(**eut.dict())
@@ -55,12 +48,12 @@ def add_eut(eut: EUTCreate, db: Session = Depends(get_db)):
     db.refresh(new_eut)
     return new_eut
 
-
+#api route to get all euts
 @router.get("/api/eut", response_model=List[EUTResponse])
 def get_all_euts(db: Session = Depends(get_db)):
     return db.query(EUT).all()
 
-
+# API Route to get EUT by ID
 @router.get("/api/eut/{eut_id}", response_model=EUTResponse)
 def get_eut_by_id(eut_id: int, db: Session = Depends(get_db)):
     eut = db.query(EUT).filter(EUT.id == eut_id).first()
@@ -68,12 +61,8 @@ def get_eut_by_id(eut_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="EUT not found")
     return eut
 
-# --------------------------------
-# HOME ROUTE (UI ENTRY)
-# --------------------------------
+# HOME API ROUTE (UI ENTRY POINT)
 @router.get("/", tags=["UI"])
 def home():
-    """
-    Redirect to static frontend home.html
-    """
+    # Redirect to static frontend home.html
     return RedirectResponse(url="/static/home.html")

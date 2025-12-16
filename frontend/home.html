@@ -61,7 +61,7 @@
 
 <h2>🔧 EUT Management System</h2>
 
-<!-- ================= FORM ================= -->
+<!-- FORM for Entering All TextBox Entries for EUT -->
 <div class="form-box">
     <h3>Add EUT Details</h3>
 
@@ -75,7 +75,7 @@
     <p id="status"></p>
 </div>
 
-<!-- ================= LIST ================= -->
+<!-- LIST of Stored EUTs -->
 <div class="list-box">
     <h3>Stored EUTs</h3>
 
@@ -94,7 +94,7 @@
 </div>
 
 <script>
-    // IMPORTANT: must match backend routes
+    // IMPORTANT: This must match backend routes
     const API_BASE = "/api";
 
     function submitEUT() {
@@ -156,7 +156,7 @@
         document.getElementById("serial").value = "";
     }
 
-    // Load data on page load
+    // Function to load data on page load
     loadEUTs();
 </script>
 
