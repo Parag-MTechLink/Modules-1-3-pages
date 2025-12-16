@@ -1,0 +1,15 @@
+---------------
+
+backend/api/
+backend/auth/
+backend/middleware/
+database/migrations/
+frontend/react-app/
+
+---------
+
+database/
+├── app.db
+├── migrations/
+├── schema.sql
+└── seed.sql

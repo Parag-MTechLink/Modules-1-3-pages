@@ -1,0 +1,10 @@
+# ITR 1
+home.html (CDN)
+   ↓ REST
+FastAPI (/eut/add)
+   ↓
+SQLite DB
+   ↑
+FastAPI (/eut/list)
+   ↑
+home.html UI
