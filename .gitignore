@@ -2,4 +2,4 @@ __pycache__/
 *.pyc
 .venv/
 240pyenv/
-app.db/
+app.db
