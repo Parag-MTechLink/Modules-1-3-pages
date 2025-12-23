@@ -1,0 +1,598 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Testing Requirements</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f6f8fb;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: 30px;
+}
+
+.main {
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.test-type {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.test-type label {
+    margin: 0 15px;
+    font-size: 14px;
+}
+
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.test-box {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.test-box h4 {
+    margin-top: 0;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.test-item {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.test-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.test-header input {
+    margin-right: 8px;
+}
+
+.arrow {
+    margin-left: auto;
+    font-size: 11px;
+}
+
+.sub-options {
+    margin-left: 22px;
+    margin-top: 6px;
+    display: none;
+}
+
+.sub-options label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.selected-box {
+    border: 1px dashed #ccc;
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 6px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-prev {
+    background: #e0e0e0;
+}
+
+.btn-next {
+    background: #2f80ed;
+    color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="main">
+
+<h2>Testing Requirements</h2>
+
+<div class="test-type">
+    <label><input type="checkbox"> Pre-Compliance Test</label>
+    <label><input type="checkbox" checked> Final Testing / Compliance Testing</label>
+    <label><input type="checkbox"> ILC</label>
+</div>
+
+<div class="test-grid">
+
+<!-- ================= EMC ================= -->
+<div class="test-box">
+<h4>EMC Test</h4>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">ESD immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Contact discharge</label>
+<label><input type="checkbox" class="child-test">Air discharge</label>
+<label><input type="checkbox" class="child-test">Indirect discharge (HCP/VCP)</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Radiated RF immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">80 MHz – 6 GHz</label>
+<label><input type="checkbox" class="child-test">AM modulation (1 kHz, 80%)</label>
+<label><input type="checkbox" class="child-test">Vertical & horizontal polarization</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">EFT / Burst immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Power ports</label>
+<label><input type="checkbox" class="child-test">Signal & control ports</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Surge immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Line-to-line</label>
+<label><input type="checkbox" class="child-test">Line-to-earth</label>
+<label><input type="checkbox" class="child-test">Differential & common mode</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Conducted RF immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">150 kHz – 80 MHz</label>
+<label><input type="checkbox" class="child-test">CDN / clamp methods</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Power-frequency magnetic field immunity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">50 / 60 Hz exposure</label>
+</div>
+</div>
+
+</div>
+
+<!-- ================= ENVIRONMENT ================= -->
+<div class="test-box">
+<h4>Environmental Test</h4>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Cold test</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Operational</label>
+<label><input type="checkbox" class="child-test">Storage</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Dry heat test</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Operational</label>
+<label><input type="checkbox" class="child-test">Storage</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Damp heat (steady state)</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">40°C / 93% RH</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Damp heat (cyclic)</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Temperature + humidity cycling</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Thermal cycling</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">High ↔ Low transitions</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Temperature shock</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Rapid transfer</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Vibration (sinusoidal)</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Sweep</label>
+<label><input type="checkbox" class="child-test">Resonance dwell</label>
+</div>
+</div>
+
+</div>
+
+<!-- ================= SAFETY ================= -->
+<div class="test-box">
+<h4>Safety Test</h4>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Insulation resistance test</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Standard method</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Dielectric withstand / Hi-Pot</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Option 1</label>
+<label><input type="checkbox" class="child-test">Option 2</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Leakage current test</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Earth leakage</label>
+<label><input type="checkbox" class="child-test">Touch current</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Overcurrent protection verification</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Functional check</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Overvoltage protection verification</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Functional check</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Protective earth continuity</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Continuity measurement</label>
+</div>
+</div>
+
+</div>
+
+<!-- ================= FUNCTIONAL SAFETY ================= -->
+<div class="test-box">
+<h4>Functional Safety Test</h4>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Safety function verification</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Normal operation</label>
+<label><input type="checkbox" class="child-test">Fault condition</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Fault injection test (hardware)</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Sensor fault</label>
+<label><input type="checkbox" class="child-test">Power loss</label>
+<label><input type="checkbox" class="child-test">Communication failure</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Diagnostic coverage validation</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Fault detection effectiveness</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Redundancy / safe-state behavior</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Fail-safe response</label>
+<label><input type="checkbox" class="child-test">Fail-silent behavior</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Software self-test verification</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Startup diagnostics</label>
+<label><input type="checkbox" class="child-test">Runtime checks</label>
+</div>
+</div>
+
+<div class="test-item">
+<div class="test-header" onclick="toggle(this)">
+<input type="checkbox" class="parent-test" onclick="event.stopPropagation()">
+<span class="parent-label">Safety lifecycle documentation review</span>
+<span class="arrow">▾</span>
+</div>
+<div class="sub-options">
+<label><input type="checkbox" class="child-test">Safety concept</label>
+<label><input type="checkbox" class="child-test">FMEDA</label>
+<label><input type="checkbox" class="child-test">Safety manual</label>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= SELECTED TESTS ================= -->
+<div class="selected-box">
+<strong>--------- selected tests ---------</strong>
+<div id="selectedTests"></div>
+</div>
+
+<div class="footer">
+<button class="btn-prev" onclick="goBack()">← Previous</button>
+<button class="btn-next" onclick="goNext()">Next →</button>
+</div>
+
+</div>
+</div>
+
+<script>
+function toggle(header) {
+    const box = header.nextElementSibling;
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+
+document.addEventListener("change", function (e) {
+
+    if (e.target.classList.contains("parent-test")) {
+        const item = e.target.closest(".test-item");
+        item.querySelectorAll(".child-test").forEach(c => c.checked = e.target.checked);
+        e.target.indeterminate = false;
+    }
+
+    if (e.target.classList.contains("child-test")) {
+        const item = e.target.closest(".test-item");
+        const parent = item.querySelector(".parent-test");
+        const children = item.querySelectorAll(".child-test");
+        const checked = [...children].filter(c => c.checked).length;
+
+        parent.checked = checked === children.length;
+        parent.indeterminate = checked > 0 && checked < children.length;
+    }
+
+    updateSelectedTests();
+});
+
+function updateSelectedTests() {
+    const container = document.getElementById("selectedTests");
+    container.innerHTML = "";
+
+    document.querySelectorAll(".test-box").forEach(box => {
+        const category = box.querySelector("h4").innerText;
+
+        box.querySelectorAll(".test-item").forEach(item => {
+            const parent = item.querySelector(".parent-test");
+            const label = item.querySelector(".parent-label").innerText;
+            const children = item.querySelectorAll(".child-test:checked");
+
+            if (parent.checked || children.length > 0) {
+                const div = document.createElement("div");
+                div.innerHTML = `<strong>${category} → ${label}</strong>`;
+
+                if (children.length > 0) {
+                    const ul = document.createElement("ul");
+                    children.forEach(c => {
+                        const li = document.createElement("li");
+                        li.innerText = c.parentElement.innerText.trim();
+                        ul.appendChild(li);
+                    });
+                    div.appendChild(ul);
+                }
+
+                container.appendChild(div);
+            }
+        });
+    });
+}
+
+function collectSelectedTests() {
+    const data = {};
+
+    document.querySelectorAll(".test-box").forEach(box => {
+        const category = box.querySelector("h4").innerText;
+        const catObj = {};
+
+        box.querySelectorAll(".test-item").forEach(item => {
+            const parent = item.querySelector(".parent-test");
+            const label = item.querySelector(".parent-label").innerText;
+            const children = item.querySelectorAll(".child-test:checked");
+
+            if (parent.checked || children.length > 0) {
+                catObj[label] = [...children].map(
+                    c => c.parentElement.innerText.trim()
+                );
+            }
+        });
+
+        if (Object.keys(catObj).length > 0) {
+            data[category] = catObj;
+        }
+    });
+
+    return data;
+}
+
+async function goNext() {
+    const productId = localStorage.getItem("current_product_id");
+
+    if (!productId) {
+        alert("❌ Product ID missing. Please restart from Page 1.");
+        return;
+    }
+
+    const payload = {
+        product_id: productId,
+        testing_requirements: collectSelectedTests()
+    };
+
+    console.log("Updating EUT:", payload);
+
+    const res = await fetch("/api/eut", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        alert("❌ Failed to save testing requirements");
+        return;
+    }
+
+    window.location.href = "/static/home4.html";
+
+}
+
+function goBack() {
+    window.location.href = "/static/home.html";
+}
+</script>
+
+
+</body>
+</html>

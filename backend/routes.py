@@ -1,21 +1,27 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import List
-
+from sqlalchemy import text
+import uuid
 from backend.database import SessionLocal, engine
-from backend.models import Base, EUT
+from backend.models import Base
+from backend.services import EUTSchemaManager
+import json
+from sqlalchemy import text
 
-# DataBase Initialization
+# --------------------------------
+# DB INIT
+# --------------------------------
 Base.metadata.create_all(bind=engine)
 
-
+# --------------------------------
 # ROUTER
+# --------------------------------
 router = APIRouter(tags=["EUT"])
 
-
+# --------------------------------
 # DB Dependency
+# --------------------------------
 def get_db():
     db = SessionLocal()
     try:
@@ -23,46 +29,114 @@ def get_db():
     finally:
         db.close()
 
-# Pydantic Schemas
-class EUTCreate(BaseModel):
-    name: str
-    quantity: int
-    manufacturer_address: str
-    model_number: str
-    serial_number: str
+# --------------------------------
+# CREATE EUT
+# --------------------------------
+@router.post("/api/eut")
+def add_or_update_eut(eut: dict, db: Session = Depends(get_db)):
 
-class EUTResponse(EUTCreate):
-    id: int
+    # 🔹 PAGE 1 → CREATE
+    if not eut.get("product_id"):
+        eut["product_id"] = f"EUT-{uuid.uuid4().hex[:8].upper()}"
+        mode = "INSERT"
+    else:
+        mode = "UPDATE"
 
-    class Config:
-        orm_mode = True
+    schema_manager = EUTSchemaManager(
+        engine=db.get_bind(),
+        table_name="eut_details"
+    )
+    schema_manager.ensure_columns_from_payload(eut)
 
+    # Convert dict/list → JSON
+    for k, v in eut.items():
+        if isinstance(v, (dict, list)):
+            eut[k] = json.dumps(v)
 
-# API ROUTES
-#api route to add eut
-@router.post("/api/eut", response_model=EUTResponse)
-def add_eut(eut: EUTCreate, db: Session = Depends(get_db)):
-    new_eut = EUT(**eut.dict())
-    db.add(new_eut)
+    if mode == "INSERT":
+        columns = ", ".join(f'"{k}"' for k in eut.keys())
+        values = ", ".join(f":{k}" for k in eut.keys())
+
+        sql = text(f"""
+            INSERT INTO eut_details ({columns})
+            VALUES ({values})
+        """)
+        db.execute(sql, eut)
+
+    else:
+        set_clause = ", ".join(
+            f'"{k}" = :{k}' for k in eut.keys() if k != "product_id"
+        )
+
+        sql = text(f"""
+            UPDATE eut_details
+            SET {set_clause}
+            WHERE product_id = :product_id
+        """)
+        result = db.execute(sql, eut)
+
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Update failed: product_id not found"
+            )
+
     db.commit()
-    db.refresh(new_eut)
-    return new_eut
 
-#api route to get all euts
-@router.get("/api/eut", response_model=List[EUTResponse])
+    return {
+        "status": "success",
+        "product_id": eut["product_id"]
+    }
+
+
+
+
+# --------------------------------
+# READ ALL EUTs
+# --------------------------------
+@router.get("/api/eut")
 def get_all_euts(db: Session = Depends(get_db)):
-    return db.query(EUT).all()
+    """
+    Return all EUTs as dictionaries.
+    Required for dynamic schemas.
+    """
+    result = db.execute(text("SELECT * FROM eut_details"))
+    return result.mappings().all()
 
-# API Route to get EUT by ID
-@router.get("/api/eut/{eut_id}", response_model=EUTResponse)
-def get_eut_by_id(eut_id: int, db: Session = Depends(get_db)):
-    eut = db.query(EUT).filter(EUT.id == eut_id).first()
-    if not eut:
+# --------------------------------
+# READ SINGLE EUT BY PRODUCT ID
+# --------------------------------
+@router.get("/api/eut/by-product/{product_id}")
+def get_eut_by_product_id(product_id: str, db: Session = Depends(get_db)):
+
+    result = db.execute(
+        text("SELECT * FROM eut_details WHERE product_id = :pid"),
+        {"pid": product_id}
+    ).mappings().first()
+
+    if not result:
         raise HTTPException(status_code=404, detail="EUT not found")
-    return eut
 
-# HOME API ROUTE (UI ENTRY POINT)
+    return result
+
+# --------------------------------
+# READ SINGLE EUT
+# --------------------------------
+@router.get("/api/eut/{eut_id}")
+def get_eut_by_id(eut_id: int, db: Session = Depends(get_db)):
+    result = db.execute(
+        text("SELECT * FROM eut_details WHERE id = :id"),
+        {"id": eut_id}
+    ).mappings().first()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="EUT not found")
+
+    return result
+
+# --------------------------------
+# HOME ROUTE
+# --------------------------------
 @router.get("/", tags=["UI"])
 def home():
-    # Redirect to static frontend home.html
     return RedirectResponse(url="/static/home.html")

@@ -11,153 +11,260 @@
             background: #f7f7f7;
         }
 
-        h2 {
+        h2, h3 {
             color: #333;
         }
 
-        .form-box, .list-box {
+        .section {
             background: #fff;
             padding: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 8px rgba(0,0,0,0.08);
         }
 
-        input {
+        input, textarea, select {
             width: 100%;
             padding: 8px;
             margin: 6px 0 12px 0;
         }
 
+        textarea {
+            resize: vertical;
+        }
+
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background: #007bff;
-            color: white;
+            color: #fff;
             border: none;
             cursor: pointer;
         }
 
-        button:hover {
-            background: #0056b3;
+        .table-container {
+            width: 100%;
+            max-height: 400px;
+            overflow-x: auto;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            background: #fff;
         }
 
         table {
-            width: 100%;
+            min-width: 1200px;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            border: 1px solid #ccc;
+            padding: 6px;
+            white-space: nowrap;
         }
 
         th {
-            background: #f0f0f0;
+            background: #eee;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
 
-<h2>🔧 EUT Management System</h2>
+<h2>🔧 EUT Registration & Testing Request</h2>
 
-<!-- FORM for Entering All TextBox Entries for EUT -->
-<div class="form-box">
-    <h3>Add EUT Details</h3>
-
-    <input id="name" placeholder="Name of EUT" />
-    <input id="quantity" type="number" placeholder="Quantity" />
-    <input id="address" placeholder="Manufacturer Address" />
-    <input id="model" placeholder="Model Number" />
-    <input id="serial" placeholder="Serial Number" />
-
-    <button onclick="submitEUT()">Submit</button>
-    <p id="status"></p>
+<!-- ================= BASIC INFO ================= -->
+<div class="section">
+<h3>1. Basic Equipment Information</h3>
+<input id="name_of_eut" placeholder="Name of EUT">
+<input id="quantity_of_eut" type="number" placeholder="Quantity of EUT">
+<textarea id="manufacturer_address" placeholder="Manufacturer / Make & Address"></textarea>
+<input id="model_no" placeholder="Model No.">
+<input id="serial_no" placeholder="Serial No.">
 </div>
 
-<!-- LIST of Stored EUTs -->
-<div class="list-box">
-    <h3>Stored EUTs</h3>
+<!-- ================= TECHNICAL ================= -->
+<div class="section">
+<h3>2. Technical Specifications</h3>
+<input id="supply_voltage" placeholder="Supply Voltage">
+<input id="operating_frequency" placeholder="Operating Frequency">
+<input id="current" placeholder="Current">
+<input id="weight" type="number" step="0.01" placeholder="Weight (kg)">
+<input id="dimension_l" type="number" step="0.01" placeholder="Length (mm)">
+<input id="dimension_w" type="number" step="0.01" placeholder="Width (mm)">
+<input id="dimension_h" type="number" step="0.01" placeholder="Height (mm)">
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Qty</th>
-                <th>Model</th>
-                <th>Serial</th>
-            </tr>
-        </thead>
-        <tbody id="eutTable"></tbody>
-    </table>
+<!-- ================= CONNECTIVITY ================= -->
+<div class="section">
+<h3>3. Connectivity & Interfaces</h3>
+<input id="no_of_power_ports" placeholder="No. of Power Ports & Connector Type">
+<input id="connector_type" placeholder="No. of Signal Lines & Connector Type">
+</div>
+
+<!-- ================= SOFTWARE ================= -->
+<div class="section">
+<h3>4. Software Information</h3>
+<input id="software_name" placeholder="Software Name">
+<input id="software_version_no" placeholder="Software Version No.">
+</div>
+
+<!-- ================= INDUSTRY ================= -->
+<div class="section">
+<h3>5. Industry / Application</h3>
+
+<select id="industry_application_select" onchange="handleIndustryChange()">
+    <option value="">-- Select Industry --</option>
+    <option value="Telecommunication">Telecommunication</option>
+    <option value="Medical">Medical</option>
+    <option value="Automotive">Automotive</option>
+    <option value="Industrial">Industrial</option>
+    <option value="Consumer Electronics">Consumer Electronics</option>
+    <option value="IoT">IoT</option>
+    <option value="Aerospace & Defence">Aerospace & Defence</option>
+    <option value="Energy & Power">Energy & Power</option>
+    <option value="Other">Other</option>
+</select>
+
+<input
+    id="industry_application_other"
+    placeholder="Specify industry / application"
+    style="display:none;"
+>
+</div>
+
+<!-- ================= TESTING DATES ================= -->
+<div class="section">
+<h3>6. Preferred Testing Dates</h3>
+<input type="date" id="preferred_testing_date">
+<textarea
+    id="additional_requirements"
+    placeholder="Additional Requirements / Notes"
+></textarea>
+</div>
+
+<button onclick="submitEUT()">Submit</button>
+<p id="status"></p>
+
+<!-- ================= TABLE ================= -->
+<h3>📋 Registered EUTs</h3>
+<div class="table-container">
+<table>
+    <thead id="eutTableHead"></thead>
+    <tbody id="eutTable"></tbody>
+</table>
 </div>
 
 <script>
-    // IMPORTANT: This must match backend routes
-    const API_BASE = "/api";
+const API_BASE = "/api";
 
-    function submitEUT() {
-        const data = {
-            name: document.getElementById("name").value,
-            quantity: Number(document.getElementById("quantity").value),
-            manufacturer_address: document.getElementById("address").value,
-            model_number: document.getElementById("model").value,
-            serial_number: document.getElementById("serial").value
-        };
+function getVal(id) {
+    return document.getElementById(id).value;
+}
 
-        fetch(`${API_BASE}/eut`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Failed to add EUT");
-            return res.json();
-        })
-        .then(() => {
-            document.getElementById("status").innerText = "✅ EUT added successfully";
-            clearForm();
-            loadEUTs();
-        })
-        .catch(err => {
-            document.getElementById("status").innerText = "❌ Error adding EUT";
-            console.error(err);
-        });
+function getNumber(id) {
+    const v = document.getElementById(id).value;
+    return v === "" ? null : Number(v);
+}
+
+function handleIndustryChange() {
+    const sel = document.getElementById("industry_application_select");
+    const other = document.getElementById("industry_application_other");
+
+    if (sel.value === "Other") {
+        other.style.display = "block";
+    } else {
+        other.style.display = "none";
+        other.value = "";
     }
+}
 
-    function loadEUTs() {
-        fetch(`${API_BASE}/eut`)
-            .then(res => res.json())
-            .then(data => {
-                const table = document.getElementById("eutTable");
-                table.innerHTML = "";
+function clearForm() {
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+        if (el.type !== "date") el.value = "";
+    });
+    document.getElementById("industry_application_other").style.display = "none";
+}
 
-                data.forEach(e => {
-                    const row = `
-                        <tr>
-                            <td>${e.id}</td>
-                            <td>${e.name}</td>
-                            <td>${e.quantity}</td>
-                            <td>${e.model_number}</td>
-                            <td>${e.serial_number}</td>
-                        </tr>
-                    `;
-                    table.innerHTML += row;
-                });
+function submitEUT() {
+    const data = {
+        name_of_eut: getVal("name_of_eut"),
+        quantity_of_eut: getNumber("quantity_of_eut"),
+        manufacturer_address: getVal("manufacturer_address"),
+        model_no: getVal("model_no"),
+        serial_no: getVal("serial_no"),
+
+        supply_voltage: getVal("supply_voltage"),
+        operating_frequency: getVal("operating_frequency"),
+        current: getVal("current"),
+        weight: getNumber("weight"),
+        dimension_l: getNumber("dimension_l"),
+        dimension_w: getNumber("dimension_w"),
+        dimension_h: getNumber("dimension_h"),
+
+        no_of_power_ports: getVal("no_of_power_ports"),
+        connector_type: getVal("connector_type"),
+
+        software_name: getVal("software_name"),
+        software_version_no: getVal("software_version_no"),
+
+        industry_application:
+            document.getElementById("industry_application_select").value === "Other"
+                ? getVal("industry_application_other")
+                : document.getElementById("industry_application_select").value,
+
+        preferred_testing_date: getVal("preferred_testing_date"),
+        additional_requirements: getVal("additional_requirements")
+    };
+
+    fetch(`${API_BASE}/eut`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(async (res) => {
+        if (!res.ok) {
+            alert("❌ Failed to submit EUT");
+            return;
+        }
+        const data = await res.json();
+        
+        localStorage.setItem("current_product_id", data.product_id);
+        
+        window.location.href = "/static/home2.html";
+})
+
+    .catch(() => {
+        alert("❌ Failed to submit EUT");
+    });
+}
+
+function loadEUTs() {
+    fetch(`${API_BASE}/eut`)
+        .then(r => r.json())
+        .then(data => {
+            const thead = document.getElementById("eutTableHead");
+            const tbody = document.getElementById("eutTable");
+
+            thead.innerHTML = "";
+            tbody.innerHTML = "";
+
+            if (!data || !data.length) return;
+
+            const columns = [...new Set(data.flatMap(o => Object.keys(o)))];
+
+            thead.innerHTML =
+                `<tr>${columns.map(c => `<th>${c}</th>`).join("")}</tr>`;
+
+            data.forEach(row => {
+                tbody.innerHTML +=
+                    `<tr>${columns.map(c => `<td>${row[c] ?? ""}</td>`).join("")}</tr>`;
             });
-    }
+        });
+}
 
-    function clearForm() {
-        document.getElementById("name").value = "";
-        document.getElementById("quantity").value = "";
-        document.getElementById("address").value = "";
-        document.getElementById("model").value = "";
-        document.getElementById("serial").value = "";
-    }
-
-    // Function to load data on page load
-    loadEUTs();
+loadEUTs();
 </script>
 
 </body>
